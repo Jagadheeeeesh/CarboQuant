@@ -1,6 +1,6 @@
-# IS4302 Group 6 Project - Blockchain-based Carbon Credit Ecosystem
+# IS4302 Group 6 Project - CarboQuant Ecosystem
 
-IS4302 Blockchain and Distributed Ledger Technologies. A Blockchain-based Carbon Credit Ecosystem that facilitates the
+IS4302 Blockchain and Distributed Ledger Technologies. A CarboQuant Carbon Credit Ecosystem that facilitates the
 exchange of carbon credits.
 
 ## 01 Use Case Description
@@ -65,18 +65,18 @@ exchange market in which the tokens will be traded. The 3 smart tokens to be dep
 Due to the goal of attaining full transparency in the carbon reporting, all data pertaining to our carbon market will be
 stored on-chain. The key information that will be stored on-chain and their data structures are listed below:
 
-*Carbon Credit Contract*
+_Carbon Credit Contract_
 ![photo_name](photos/informationStorageCC_new.png)
 
-*Carbon Credit Marketplace Contract*
+_Carbon Credit Marketplace Contract_
 ![photo_name](photos/informationStorageCMP_new.png)
 
 ## 03 Functional & Access Control
 
-*Carbon Credit Contract*
+_Carbon Credit Contract_
 ![photo_name](photos/functionalCC_new.png)
 
-*Carbon Credit Marketplace Contract*
+_Carbon Credit Marketplace Contract_
 ![photo_name](photos/functionalCMP_new.png)
 
 ## 04 Privacy
@@ -99,19 +99,19 @@ different roles (consumers, generators, validators, regulators).
 
 ### Assumptions
 
-1) Fines are done offline, by the regulators. Our system simply facilitates the trading of the carbon tokens; however,
+1. Fines are done offline, by the regulators. Our system simply facilitates the trading of the carbon tokens; however,
    any fiat-based fines that are indicated by the system have to be settled offline.
-2) Checking of actual emission levels are done offline, by the certified validators. This checking work is a specialized
+2. Checking of actual emission levels are done offline, by the certified validators. This checking work is a specialized
    skill set that the validators are licensed to do. Be it checking of Consumers’ carbon emission levels, or Generators’
    recarbonization volumes, each certification has to be done by validators who physically check the validity of the
    claims.
-3) Each carbon credit token represents the right to emit a certain fixed amount of CO2. These are represented by
+3. Each carbon credit token represents the right to emit a certain fixed amount of CO2. These are represented by
    fungible tokens, and do not come in different denominations denoting different volume permits. This is a simplifying
    assumption to narrow the scope of our project.
-4) Market forces are allowed to determine the price of the tokens; the regulators do not intervene in the markets. This
+4. Market forces are allowed to determine the price of the tokens; the regulators do not intervene in the markets. This
    is beneficial since now, firms can weigh the costs of green CAPEX against the cost of buying carbon credits, and
    hence the price of the tokens will settle at a level which makes sense in the free markets.
-5) Firms, upon creation in our ecosystem, are granted a set number of tokens. This is not customised based on industry
+5. Firms, upon creation in our ecosystem, are granted a set number of tokens. This is not customised based on industry
    or differing needs, as would ideally be done in real life. We have chosen this to simplify our problem scope.
 
 ### Conclusion

@@ -1,7 +1,7 @@
 {
-  "name": "drizzle-vue-box",
+  "name": "carboquant",
   "version": "0.0.1",
-  "description": "",
+  "description": "CarboQuant - Blockchain-based Carbon Credit Trading Platform",
   "main": "truffle-config.js",
   "directories": {
     "test": "test"
@@ -11,9 +11,9 @@
   },
   "keywords": [],
   "author": {
-    "name": "Amal Sudama",
-    "email": "amal@trufflesuite.com",
-    "url": "http://github.com/truffle-box/drizzle-vue-box"
+    "name": "CarboQuant Team",
+    "email": "admin@carboquant.com",
+    "url": "http://github.com/carboquant/carboquant"
   },
   "license": "ISC",
   "dependencies": {

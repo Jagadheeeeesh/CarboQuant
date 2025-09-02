@@ -4,7 +4,7 @@
       <div class="brand">
         <router-link to="/" class="brand-link">
           <i class="ri-leaf-line"></i>
-          <span>CarboConnect</span>
+          <span>CarboQuant</span>
         </router-link>
       </div>
       

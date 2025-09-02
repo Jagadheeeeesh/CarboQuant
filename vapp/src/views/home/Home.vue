@@ -4,7 +4,7 @@
       <div class="hero-content">
         <h1 class="hero-title">
           Welcome to<br />
-          <span class="gradient-text">CarboConnect</span>
+          <span class="gradient-text">CarboQuant</span>
         </h1>
         <p class="hero-subtitle">
           The next generation platform for carbon credit trading,
