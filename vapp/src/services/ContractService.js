@@ -169,7 +169,7 @@ class ContractService {
 
   async getQuantities() {
     const contract = this.getContract('MarketPlace');
-    return await contract.methods.getQuantities().call();
+    return await contract.methods.getQty().call();
   }
 
   async getNumListings() {
