@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
 import BackButton from "@/components/BackButton";
 
 export default {
@@ -31,22 +30,50 @@ export default {
   data() {
     return {
       conId: '',
-      conEmissions: ''
+      conEmissions: '',
+      web3Ready: false
     };
   },
-  computed: {
-    ...mapGetters("drizzle", ["isDrizzleInitialized", "drizzleInstance"])
+  async mounted() {
+    await this.initContractService();
   },
   methods: {
+    async initContractService() {
+      try {
+        const success = await this.$contractService.initWeb3();
+        if (success) {
+          this.web3Ready = true;
+        } else {
+          this.$bvToast.toast('Failed to initialize Web3 connection', {
+            title: 'Connection Error',
+            autoHideDelay: 5000,
+            variant: 'danger'
+          });
+        }
+      } catch (error) {
+        console.error('Error initializing contract service:', error);
+        this.$bvToast.toast('Error initializing blockchain connection', {
+          title: 'Error',
+          autoHideDelay: 5000,
+          variant: 'danger'
+        });
+      }
+    },
     async reportEmissions() {
-      if (this.isDrizzleInitialized) {
-        window.console.log('conIds: ', this.conId);
-        window.console.log('conEmissions: ', this.conEmissions);
+      if (!this.web3Ready) {
+        alert("Blockchain connection not ready");
+        return;
+      }
 
-        const conList = await this.drizzleInstance.contracts['CarbonCredit'].methods.getConsumerList().call();
-        if (conList.includes(this.conId.toString())) {
-          const reportEmissions = await this.drizzleInstance.contracts['CarbonCredit'].methods['reportEmissions'];
-          await reportEmissions.cacheSend(this.conId, this.conEmissions, {gas: 1000000});
+      try {
+        console.log('conId: ', this.conId);
+        console.log('conEmissions: ', this.conEmissions);
+
+        const conList = await this.$contractService.getConsumerList();
+        const conIdNumber = parseInt(this.conId);
+        
+        if (conList.some(id => parseInt(id) === conIdNumber)) {
+          await this.$contractService.reportEmissions(conIdNumber, this.conEmissions);
 
           const display = `Consumer ID ${this.conId} was reported with ${this.conEmissions} emissions.`;
           this.$bvToast.toast(display, {
@@ -54,6 +81,10 @@ export default {
             autoHideDelay: 5000,
             variant: 'success'
           });
+
+          // Clear form
+          this.conId = '';
+          this.conEmissions = '';
         } else {
           const display = `Consumer ID ${this.conId} has not been created. Please specify an ID that exists.`;
           this.$bvToast.toast(display, {
@@ -62,9 +93,13 @@ export default {
             variant: 'danger'
           });
         }
-
-      } else {
-        alert("Drizzle doesn't seem to be initialised / ready");
+      } catch (error) {
+        console.error('Error reporting emissions:', error);
+        this.$bvToast.toast('Error reporting emissions: ' + error.message, {
+          title: 'Error',
+          autoHideDelay: 5000,
+          variant: 'danger'
+        });
       }
     }
   }
