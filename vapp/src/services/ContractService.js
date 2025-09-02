@@ -8,8 +8,8 @@ class ContractService {
     this.contracts = {};
     this.accounts = [];
     this.contractAddresses = {
-      CarbonCredit: '0x254dffcd3277C0b1660F6d42EFbB754edaBAbC2B',
-      MarketPlace: '0xD833215cBcc3f914bD1C9ece3EE7BF8B14f841bb'
+      CarbonCredit: '0x03f21DD4dC82d9A3D28809845DE6dfb2B22a24dC',
+      MarketPlace: '0x1b37c29bDd76D23069584e4397D11c009376F06B'
     };
   }
 
@@ -26,8 +26,8 @@ class ContractService {
           this.web3 = new Web3('http://127.0.0.1:7545');
         }
       } else {
-        // Fallback to local development node (Ganache)
-        this.web3 = new Web3('http://127.0.0.1:7545');
+        // Fallback to local development node (Truffle Develop)
+        this.web3 = new Web3('http://127.0.0.1:9545');
       }
 
       // Get accounts
