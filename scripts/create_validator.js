@@ -20,7 +20,8 @@ async function createValidator() {
     console.log('Creating validator with address:', accounts[1]);
     const result = await contract.methods.createValidator(accounts[1]).send({
       from: accounts[0], // Regulator account
-      gas: 1000000
+      gas: 1000000,
+      gasPrice: '20000000000' // 20 gwei
     });
     
     console.log('Validator created successfully!');
