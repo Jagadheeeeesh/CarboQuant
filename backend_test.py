@@ -224,7 +224,7 @@ class CarbonCreditTester:
     def test_emission_reporting(self):
         """Test reporting emissions for consumers"""
         try:
-            consumer_id = 2001
+            consumer_id = getattr(self, 'test_consumer_id', 2001)
             emission_amount = 75
             
             # Report emissions
@@ -236,7 +236,11 @@ class CarbonCreditTester:
             })
             
             # Wait for transaction
-            self.w3.eth.wait_for_transaction_receipt(tx_hash)
+            receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
+            
+            # Check if transaction was successful
+            if receipt['status'] != 1:
+                return self.log_test("Emission Reporting", False, "Transaction failed")
             
             # Verify emissions reported
             emissions = self.carbon_credit.functions.getConsumerEmissions(consumer_id).call()
