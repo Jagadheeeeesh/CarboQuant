@@ -374,7 +374,7 @@ class CarbonCreditTester:
             # Estimate gas
             gas_estimate = self.carbon_credit.functions.createGenerator(
                 generator_id, generator_name, self.accounts[5]
-            ).estimateGas({
+            ).estimate_gas({
                 'from': self.regulator
             })
             
