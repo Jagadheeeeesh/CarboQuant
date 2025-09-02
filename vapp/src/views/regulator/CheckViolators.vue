@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isDrizzleInitialized" id="wrapper">
+  <div v-if="web3Ready" id="wrapper">
     <div id="title">
       <h2>Check Violators</h2>
       <BackButton/>
@@ -31,7 +31,7 @@
       </table>
     </div>
   </div>
-  <div v-else>Loading...</div>
+  <div v-else>Loading Web3...</div>
 </template>
 
 <script>
