@@ -10,7 +10,7 @@
   "dependencies": {
     "bootstrap-vue": "^2.21.2",
     "chokidar": "^3.5.3",
-    "firebase": "^8.3.1",
+    "firebase": "^7.24.0",
     "prettier": "^1.18.2",
     "vue": "^2.6.10",
     "vue-toasted": "^1.1.28",
