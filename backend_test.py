@@ -68,7 +68,7 @@ class CarbonCreditTester:
     def test_web3_connection(self):
         """Test Web3 connection to Ganache"""
         try:
-            connected = self.w3.isConnected()
+            connected = self.w3.is_connected()
             latest_block = self.w3.eth.block_number
             return self.log_test(
                 "Web3 Connection", 
