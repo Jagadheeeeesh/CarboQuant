@@ -8,8 +8,13 @@ class ContractService {
     this.contracts = {};
     this.accounts = [];
     this.contractAddresses = {
+<<<<<<< HEAD
       CarbonCredit: '0x03f21DD4dC82d9A3D28809845DE6dfb2B22a24dC',
       MarketPlace: '0x1b37c29bDd76D23069584e4397D11c009376F06B'
+=======
+      CarbonCredit: '0x23E4ADd7998aFc4BD734db9dc399b653B389E064',
+      MarketPlace: '0x7B58B17A0488eFB539133B23F630EAE8d415749B'
+>>>>>>> 5be176ef15967a8a0d6d513490cc0eb3854073a6
     };
   }
 
