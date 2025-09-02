@@ -15,9 +15,6 @@ class CarbonCreditTester:
         # Connect to Ganache
         self.w3 = Web3(Web3.HTTPProvider('http://127.0.0.1:7545'))
         
-        # Add middleware for Ganache compatibility
-        self.w3.middleware_onion.inject(geth_poa_middleware, layer=0)
-        
         # Contract addresses from deployment
         self.carbon_credit_address = '0x23E4ADd7998aFc4BD734db9dc399b653B389E064'
         self.marketplace_address = '0x7B58B17A0488eFB539133B23F630EAE8d415749B'
