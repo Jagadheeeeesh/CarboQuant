@@ -1,0 +1,6 @@
+.idea
+
+node_modules
+
+vapp/node_modules
+vapp/src/contracts
