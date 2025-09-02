@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isDrizzleInitialized" id="wrapper">
+  <div v-if="web3Ready" id="wrapper">
     <!-- Sidenav -->
     <div class="row" ref="foo">
       <div class="profile left">
@@ -47,47 +47,68 @@
       </div>
     </div>
   </div>
-  <div v-else>Loading...</div>
+  <div v-else>Loading Web3...</div>
 </template>
 
 <script>
-import {mapGetters} from "vuex";
 import BackButton from "@/components/BackButton";
 
 export default {
   name: 'GeneratorProfile',
   components: {BackButton},
-  computed: {
-    ...mapGetters('accounts', ['activeAccount', 'activeBalance']),
-    ...mapGetters('drizzle', ['isDrizzleInitialized', 'drizzleInstance']),
-  },
   data() {
     return {
       id: 'NIL',
       name: 'NIL',
       balance: 'NIL',
-      genList: []
+      genList: [],
+      web3Ready: false
     };
   },
+  async mounted() {
+    await this.initContractService();
+  },
   methods: {
+    async initContractService() {
+      try {
+        const success = await this.$contractService.initWeb3();
+        if (success) {
+          this.web3Ready = true;
+          await this.setUp();
+        } else {
+          this.$bvToast.toast('Failed to initialize Web3 connection', {
+            title: 'Connection Error',
+            autoHideDelay: 5000,
+            variant: 'danger'
+          });
+        }
+      } catch (error) {
+        console.error('Error initializing contract service:', error);
+        this.$bvToast.toast('Error initializing blockchain connection', {
+          title: 'Error',
+          autoHideDelay: 5000,
+          variant: 'danger'
+        });
+      }
+    },
     async setUp() {
-      const accounts = this.$store.state.accounts;
-      window.console.log('accounts', accounts);
-
-      const genList = await this.drizzleInstance.contracts['CarbonCredit'].methods.getGeneratorList().call();
-      window.console.log('genList', genList);
-      this.genList = genList;
+      try {
+        const genList = await this.$contractService.getGeneratorList();
+        console.log('genList', genList);
+        this.genList = genList;
+      } catch (error) {
+        console.error('Error setting up generator list:', error);
+      }
     },
     async getGeneratorData() {
-      const isGenerator = await this.drizzleInstance.contracts['CarbonCredit'].methods.isGenerator(this.id).call();
-      window.console.log('isGenerator', isGenerator);
+      try {
+        const generatorId = parseInt(this.id);
+        
+        const name = await this.$contractService.getGeneratorName(generatorId);
+        const balance = await this.$contractService.getGeneratorCredits(generatorId);
 
-      if (isGenerator) {
-        const name = await this.drizzleInstance.contracts['CarbonCredit'].methods.getGeneratorName(this.id).call();
-        const balance = await this.drizzleInstance.contracts['CarbonCredit'].methods.getGeneratorCredits(this.id).call();
-
-        window.console.log('name', name);
-        window.console.log('balance', balance);
+        console.log('name', name);
+        console.log('balance', balance);
 
         this.name = name;
         this.balance = balance;
@@ -98,21 +119,17 @@ export default {
           autoHideDelay: 5000,
           variant: 'success'
         });
-      }
-    },
-  },
-  mounted() {
-    if (this.$refs.foo) {
-      if (this.isDrizzleInitialized) {
-        window.console.log('initialized');
-        this.setUp();
-      } else {
-        alert("Drizzle doesn't seem to be initialised / ready");
+      } catch (error) {
+        console.error('Error getting generator data:', error);
+        this.$bvToast.toast('Error getting generator data: ' + error.message, {
+          title: 'Error',
+          autoHideDelay: 5000,
+          variant: 'danger'
+        });
       }
     }
   }
 };
-
 </script>
 
 <style scoped>
@@ -220,5 +237,4 @@ input[type="submit"]:hover {
   border: solid 1px #2d3f55;
   color: white;
 }
-
 </style>
