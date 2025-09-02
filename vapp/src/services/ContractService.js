@@ -7,8 +7,8 @@ class ContractService {
     this.web3 = null;
     this.contracts = {};
     this.accounts = [];    this.contractAddresses = {
-      CarbonCredit: '0x87a008BD01D09c6656b96Ca24033240CE2ea07c5',
-      MarketPlace: '0x205cB522593014B785916188688F05356932eD79'
+      CarbonCredit: '0x254dffcd3277C0b1660F6d42EFbB754edaBAbC2B',
+      MarketPlace: '0xD833215cBcc3f914bD1C9ece3EE7BF8B14f841bb'
     };
   }
 
