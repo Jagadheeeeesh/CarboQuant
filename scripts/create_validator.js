@@ -1,4 +1,4 @@
-const Web3 = require('web3');
+const { Web3 } = require('web3');
 const CarbonCreditArtifact = require('../vapp/src/contracts/CarbonCredit.json');
 
 async function createValidator() {
