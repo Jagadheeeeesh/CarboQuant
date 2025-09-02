@@ -8,7 +8,6 @@ import json
 import time
 import sys
 from web3 import Web3
-from web3.middleware import geth_poa_middleware
 
 class CarbonCreditTester:
     def __init__(self):
