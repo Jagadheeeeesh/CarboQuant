@@ -18,18 +18,30 @@ class ContractService {
       // Check if Web3 has been injected by MetaMask
       if (typeof window.ethereum !== 'undefined') {
         this.web3 = new Web3(window.ethereum);
-        // Request account access
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        try {
+          // Request account access
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+        } catch (error) {
+          console.log('MetaMask access denied, falling back to Ganache');
+          this.web3 = new Web3('http://127.0.0.1:7545');
+        }
       } else {
-        // Fallback to local development node
-        this.web3 = new Web3('http://127.0.0.1:9545');
+        // Fallback to local development node (Ganache)
+        this.web3 = new Web3('http://127.0.0.1:7545');
       }
 
       // Get accounts
       this.accounts = await this.web3.eth.getAccounts();
       
+      if (this.accounts.length === 0) {
+        throw new Error('No accounts found. Make sure Ganache is running or MetaMask is connected.');
+      }
+      
       // Initialize contracts
       await this.initContracts();
+      
+      console.log('Web3 initialized successfully with', this.accounts.length, 'accounts');
+      console.log('Connected to:', this.web3.currentProvider.host || 'MetaMask');
       
       return true;
     } catch (error) {
