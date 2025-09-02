@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isDrizzleInitialized" id="wrapper">
+  <div v-if="web3Ready" id="wrapper">
     <!-- Sidenav -->
     <div class="row" ref="foo">
       <div class="profile left">
@@ -52,50 +52,71 @@
       </div>
     </div>
   </div>
-  <div v-else>Loading...</div>
+  <div v-else>Loading Web3...</div>
 </template>
 
 <script>
-import {mapGetters} from "vuex";
 import BackButton from "@/components/BackButton";
 
 export default {
   name: 'ConsumerProfile',
   components: {BackButton},
-  computed: {
-    ...mapGetters('accounts', ['activeAccount', 'activeBalance']),
-    ...mapGetters('drizzle', ['isDrizzleInitialized', 'drizzleInstance']),
-  },
   data() {
     return {
       id: 'NIL',
       name: 'NIL',
       balance: 'NIL',
       emissions: 'NIL',
-      conList: []
+      conList: [],
+      web3Ready: false
     };
   },
+  async mounted() {
+    await this.initContractService();
+  },
   methods: {
+    async initContractService() {
+      try {
+        const success = await this.$contractService.initWeb3();
+        if (success) {
+          this.web3Ready = true;
+          await this.setUp();
+        } else {
+          this.$bvToast.toast('Failed to initialize Web3 connection', {
+            title: 'Connection Error',
+            autoHideDelay: 5000,
+            variant: 'danger'
+          });
+        }
+      } catch (error) {
+        console.error('Error initializing contract service:', error);
+        this.$bvToast.toast('Error initializing blockchain connection', {
+          title: 'Error',
+          autoHideDelay: 5000,
+          variant: 'danger'
+        });
+      }
+    },
     async setUp() {
-      const accounts = this.$store.state.accounts;
-      window.console.log('accounts', accounts);
-
-      const conList = await this.drizzleInstance.contracts['CarbonCredit'].methods.getConsumerList().call();
-      window.console.log('conList', conList);
-      this.conList = conList;
+      try {
+        const conList = await this.$contractService.getConsumerList();
+        console.log('conList', conList);
+        this.conList = conList;
+      } catch (error) {
+        console.error('Error setting up consumer list:', error);
+      }
     },
     async getConsumerData() {
-      const isConsumer = await this.drizzleInstance.contracts['CarbonCredit'].methods.isConsumer(this.id).call();
-      window.console.log('isConsumer', isConsumer);
+      try {
+        const consumerId = parseInt(this.id);
+        
+        const name = await this.$contractService.getConsumerName(consumerId);
+        const balance = await this.$contractService.getConsumerCredits(consumerId);
+        const emissions = await this.$contractService.getConsumerEmissions(consumerId);
 
-      if (isConsumer) {
-        const name = await this.drizzleInstance.contracts['CarbonCredit'].methods.getConsumerName(this.id).call();
-        const balance = await this.drizzleInstance.contracts['CarbonCredit'].methods.getConsumerCredits(this.id).call();
-        const emissions = await this.drizzleInstance.contracts['CarbonCredit'].methods.getConsumerEmissions(this.id).call();
-
-        window.console.log('name', name);
-        window.console.log('balance', balance);
-        window.console.log('emissions', emissions);
+        console.log('name', name);
+        console.log('balance', balance);
+        console.log('emissions', emissions);
 
         this.name = name;
         this.balance = balance;
@@ -107,21 +128,17 @@ export default {
           autoHideDelay: 5000,
           variant: 'success'
         });
-      }
-    },
-  },
-  mounted() {
-    if (this.$refs.foo) {
-      if (this.isDrizzleInitialized) {
-        window.console.log('initialized');
-        this.setUp();
-      } else {
-        alert("Drizzle doesn't seem to be initialised / ready");
+      } catch (error) {
+        console.error('Error getting consumer data:', error);
+        this.$bvToast.toast('Error getting consumer data: ' + error.message, {
+          title: 'Error',
+          autoHideDelay: 5000,
+          variant: 'danger'
+        });
       }
     }
   }
 };
-
 </script>
 
 <style scoped>
@@ -229,5 +246,4 @@ input[type="submit"]:hover {
   border: solid 1px #2d3f55;
   color: white;
 }
-
 </style>
