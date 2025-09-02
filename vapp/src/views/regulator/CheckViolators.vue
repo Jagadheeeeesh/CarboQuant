@@ -35,25 +35,51 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
 import BackButton from "@/components/BackButton";
 
 export default {
   name: 'checkViolators',
   components: {BackButton},
-  computed: {
-    ...mapGetters('drizzle', ['isDrizzleInitialized', 'drizzleInstance']),
-  },
   data() {
     return {
       itemsList: [],
+      web3Ready: false
     };
   },
+  async mounted() {
+    await this.initContractService();
+  },
   methods: {
+    async initContractService() {
+      try {
+        const success = await this.$contractService.initWeb3();
+        if (success) {
+          this.web3Ready = true;
+        } else {
+          this.$bvToast.toast('Failed to initialize Web3 connection', {
+            title: 'Connection Error',
+            autoHideDelay: 5000,
+            variant: 'danger'
+          });
+        }
+      } catch (error) {
+        console.error('Error initializing contract service:', error);
+        this.$bvToast.toast('Error initializing blockchain connection', {
+          title: 'Error',
+          autoHideDelay: 5000,
+          variant: 'danger'
+        });
+      }
+    },
     async checkEmissions() {
-      if (this.isDrizzleInitialized) {
-        const result = await this.drizzleInstance.contracts['CarbonCredit'].methods.checkEmissions().call();
-        window.console.log('result', result);
+      if (!this.web3Ready) {
+        alert("Blockchain connection not ready");
+        return;
+      }
+
+      try {
+        const result = await this.$contractService.checkEmissions();
+        console.log('result', result);
 
         this.itemsList = []; // resetting itemsList
 
@@ -85,8 +111,13 @@ export default {
             variant: 'success'
           });
         }
-      } else {
-        alert("Drizzle doesn't seem to be initialised / ready");
+      } catch (error) {
+        console.error('Error checking emissions:', error);
+        this.$bvToast.toast('Error checking emissions: ' + error.message, {
+          title: 'Error',
+          autoHideDelay: 5000,
+          variant: 'danger'
+        });
       }
     }
   }
