@@ -119,8 +119,9 @@ class CarbonCreditTester:
     def test_generator_creation(self):
         """Test creating generators"""
         try:
-            # Create generator
-            generator_id = 1001
+            # Create generator with unique ID
+            import random
+            generator_id = random.randint(10000, 99999)
             generator_name = "GreenTech Solar Farm"
             
             tx_hash = self.carbon_credit.functions.createGenerator(
@@ -131,7 +132,11 @@ class CarbonCreditTester:
             })
             
             # Wait for transaction
-            self.w3.eth.wait_for_transaction_receipt(tx_hash)
+            receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
+            
+            # Check if transaction was successful
+            if receipt['status'] != 1:
+                return self.log_test("Generator Creation", False, "Transaction failed")
             
             # Verify generator exists
             exists = self.carbon_credit.functions.isGenerator(generator_id).call()
@@ -140,6 +145,9 @@ class CarbonCreditTester:
             
             success = exists and credits == 0 and name == generator_name
             message = f"Generator {generator_id}: exists={exists}, credits={credits}, name='{name}'"
+            
+            # Store for later tests
+            self.test_generator_id = generator_id
             
             return self.log_test("Generator Creation", success, message)
         except Exception as e:
