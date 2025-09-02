@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isDrizzleInitialized" id="wrapper">
+  <div v-if="web3Ready" id="wrapper">
     <div id="title">
       <h2>Report Emissions</h2>
       <BackButton/>
@@ -18,7 +18,7 @@
       </form>
     </div>
   </div>
-  <div v-else>Loading...</div>
+  <div v-else>Loading Web3...</div>
 </template>
 
 <script>
