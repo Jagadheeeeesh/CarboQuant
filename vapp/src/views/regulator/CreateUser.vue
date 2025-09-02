@@ -117,58 +117,7 @@ export default {
   }
 };
 </script>
-        window.console.log('creating user...');
-        window.console.log('ID: ', this.id);
-        window.console.log('Name: ', this.name);
-        window.console.log('User type: ', this.userType);
-        window.console.log('Active account: ', this.activeAccount);
 
-        if (this.userType === 'generator') {
-          window.console.log('creating generator...');
-          const genList = await this.drizzleInstance.contracts['CarbonCredit'].methods.getGeneratorList().call();
-          if (!(genList.includes(this.id.toString()))) {
-            const createGenerator = await this.drizzleInstance.contracts['CarbonCredit'].methods['createGenerator'];
-            await createGenerator.cacheSend(this.id, this.name, this.activeAccount, {gas: 1000000});
-
-            const display = `Generator ID ${this.id} (${this.name}) has been created and was allocated 0 credits.`;
-            this.$bvToast.toast(display, {
-              title: 'Successful',
-              autoHideDelay: 5000,
-              variant: 'success'
-            });
-          } else {
-            const display = `Generator ID ${this.id} has already been created. Please specify a unique ID.`;
-            this.$bvToast.toast(display, {
-              title: 'Unsuccessful',
-              autoHideDelay: 5000,
-              variant: 'danger'
-            });
-          }
-        } else {
-          window.console.log('creating consumer...');
-          const conList = await this.drizzleInstance.contracts['CarbonCredit'].methods.getConsumerList().call();
-          if (!(conList.includes(this.id.toString()))) {
-            const createConsumer = await this.drizzleInstance.contracts['CarbonCredit'].methods['createConsumer'];
-            await createConsumer.cacheSend(this.id, this.name, this.activeAccount, {gas: 1000000});
-
-            const display = `Consumer ID ${this.id} (${this.name}) has been created and was allocated 100 credits.`;
-            this.$bvToast.toast(display, {
-              title: 'Successful',
-              autoHideDelay: 5000,
-              variant: 'success'
-            });
-          } else {
-            const display = `Consumer ID ${this.id} has already been created. Please specify a unique ID.`;
-            this.$bvToast.toast(display, {
-              title: 'Unsuccessful',
-              autoHideDelay: 5000,
-              variant: 'danger'
-            });
-          }
-        }
-      } else {
-        alert("Drizzle doesn't seem to be initialised / ready");
-      }
     }
   },
 };
