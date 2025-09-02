@@ -176,6 +176,56 @@ class ContractService {
     const contract = this.getContract('MarketPlace');
     return await contract.methods.getNumListings().call();
   }
+
+  // Additional methods for complete functionality
+  async createValidator(validatorAddress) {
+    const contract = this.getContract('CarbonCredit');
+    const account = this.getCurrentAccount();
+    
+    return await contract.methods.createValidator(validatorAddress).send({
+      from: account,
+      gas: 1000000
+    });
+  }
+
+  async getConsumerName(consumerId) {
+    const contract = this.getContract('CarbonCredit');
+    return await contract.methods.getConsumerName(consumerId).call();
+  }
+
+  async getGeneratorName(generatorId) {
+    const contract = this.getContract('CarbonCredit');
+    return await contract.methods.getGeneratorName(generatorId).call();
+  }
+
+  async getConsumerEmissions(consumerId) {
+    const contract = this.getContract('CarbonCredit');
+    return await contract.methods.getConsumerEmissions(consumerId).call();
+  }
+
+  async getLastNumFilled() {
+    const contract = this.getContract('MarketPlace');
+    return await contract.methods.getLastNumFilled().call();
+  }
+
+  async getLastAvgPriceFilled() {
+    const contract = this.getContract('MarketPlace');
+    return await contract.methods.getLastAvgPriceFilled().call();
+  }
+
+  async approve(spender, amount) {
+    const contract = this.getContract('CarbonCredit');
+    const account = this.getCurrentAccount();
+    
+    return await contract.methods.approve(spender, amount).send({
+      from: account,
+      gas: 1000000
+    });
+  }
+
+  async getMarketPlaceAddress() {
+    return this.contractAddresses.MarketPlace;
+  }
 }
 
 export default new ContractService();
