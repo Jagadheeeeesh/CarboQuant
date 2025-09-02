@@ -156,8 +156,9 @@ class CarbonCreditTester:
     def test_consumer_creation(self):
         """Test creating consumers"""
         try:
-            # Create consumer
-            consumer_id = 2001
+            # Create consumer with unique ID
+            import random
+            consumer_id = random.randint(20000, 29999)
             consumer_name = "EcoManufacturing Corp"
             
             tx_hash = self.carbon_credit.functions.createConsumer(
@@ -168,7 +169,11 @@ class CarbonCreditTester:
             })
             
             # Wait for transaction
-            self.w3.eth.wait_for_transaction_receipt(tx_hash)
+            receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash)
+            
+            # Check if transaction was successful
+            if receipt['status'] != 1:
+                return self.log_test("Consumer Creation", False, "Transaction failed")
             
             # Verify consumer exists
             exists = self.carbon_credit.functions.isConsumer(consumer_id).call()
@@ -177,6 +182,9 @@ class CarbonCreditTester:
             
             success = exists and credits == 100 and name == consumer_name  # Consumers start with 100 credits
             message = f"Consumer {consumer_id}: exists={exists}, credits={credits}, name='{name}'"
+            
+            # Store for later tests
+            self.test_consumer_id = consumer_id
             
             return self.log_test("Consumer Creation", success, message)
         except Exception as e:
