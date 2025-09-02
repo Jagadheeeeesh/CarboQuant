@@ -56,15 +56,19 @@ export default {
       id: '',
       price: '',
       qty: '',
-      itemsList: [],
-      web3Ready: false
+      itemsList: [
+        { index: 0, qty: 50, price: 8 },
+        { index: 1, qty: 100, price: 9 },
+        { index: 2, qty: 75, price: 7 },
+      ],
+      web3Ready: true
     };
   },
   async mounted() {
-    await this.initContractService();
-    if (this.web3Ready) {
-      await this.setUp();
-    }
+    // await this.initContractService();
+    // if (this.web3Ready) {
+    //   await this.setUp();
+    // }
   },
   methods: {
     async initContractService() {
@@ -113,95 +117,15 @@ export default {
       }
     },
     async listCredit() {
-      if (!this.web3Ready) {
-        alert("Blockchain connection not ready");
-        return;
-      }
-
-      try {
-        // Check if generator ID is listed
-        const genList = await this.$contractService.getGeneratorList();
-        console.log('genList', genList);
-        const genIdNumber = parseInt(this.id);
-        
-        if (!genList.some(id => parseInt(id) === genIdNumber)) {
-          const display = `Generator ${this.id} has not been created. Please use an ID that has been listed`;
-          this.$bvToast.toast(display, {
-            title: 'Unsuccessful',
-            autoHideDelay: 5000,
-            variant: 'danger'
-          });
-          return;        }
-
-        // Check if prices is already listed
-        const prices = await this.$contractService.getPrices();
-        console.log('prices', prices);
-        if (prices.some(price => parseInt(price) === parseInt(this.price))) {
-          const display = `Price ${this.price} has already been listed. Please list another price!`;
-          this.$bvToast.toast(display, {
-            title: 'Unsuccessful',
-            autoHideDelay: 5000,
-            variant: 'danger'
-          });
-          return;
-        }
-
-        // Check if quantity or price is 0
-        if (Number(this.qty) === 0 || Number(this.price) === 0) {
-          const display = `Please list a valid price or quantity!`;
-          this.$bvToast.toast(display, {
-            title: 'Unsuccessful',
-            autoHideDelay: 5000,
-            variant: 'danger'
-          });
-          return;
-        }
-
-        // Check if quantity specified is > than current ID's balance
-        const balance = await this.$contractService.getGeneratorCredits(genIdNumber);
-        console.log('balance', balance);
-        console.log('quan:', this.qty);
-        if (Number(this.qty) > Number(balance)) {
-          const display = `Specified quantity of ${this.qty} exceeds current generator ID's token balance of ${balance}. Please specify a quantity lower than ${balance}!`;
-          this.$bvToast.toast(display, {
-            title: 'Unsuccessful',
-            autoHideDelay: 5000,
-            variant: 'danger'
-          });
-          return;
-        }
-
-        // List credits using ContractService
-        await this.$contractService.listCredit(genIdNumber, this.price, this.qty);
-
-        // Update local list
-        this.itemsList.push({
-          price: this.price,
-          qty: this.qty,
-          index: this.itemsList.length
-        });
-
-        this.itemsList.sort((a, b) => a.price - b.price);
-
-        const display = `Generator ${this.id} successfully listed ${this.qty} credit(s) for ${this.price}`;
-        this.$bvToast.toast(display, {
-          title: 'Successful',
-          autoHideDelay: 5000,
-          variant: 'success'
-        });
-
-        // Clear form
-        this.id = '';
-        this.price = '';
-        this.qty = '';
-      } catch (error) {
-                console.error('Error listing credit:', error);
-        this.$bvToast.toast('Error listing credit: ' + error.message, {
-          title: 'Error',
-          autoHideDelay: 5000,
-          variant: 'danger'
-        });
-      }
+      this.itemsList.push({
+        index: this.itemsList.length,
+        qty: this.qty,
+        price: this.price
+      });
+      this.itemsList.sort((a, b) => a.price - b.price);
+      this.id = '';
+      this.price = '';
+      this.qty = '';
     }
   }
 };

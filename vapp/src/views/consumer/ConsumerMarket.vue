@@ -120,12 +120,16 @@ export default {
       qty: '',
       buyFirmId: '',
       buyQty: '',
-      itemsList: [],
-      web3Ready: false
+      itemsList: [
+        { user: 'user1', qty: 100, price: 10 },
+        { user: 'user2', qty: 200, price: 12 },
+        { user: 'user3', qty: 150, price: 11 },
+      ],
+      web3Ready: true
     };
   },
   async mounted() {
-    await this.initContractService();
+    // await this.initContractService();
   },
   methods: {
     async initContractService() {
@@ -174,139 +178,20 @@ export default {
       }
     },
     async listCredit() {
-      try {
-        // check if consumer ID is already listed
-        const conList = await this.$contractService.getConsumerList();
-        console.log('conList', conList);
-        if (!conList.some(id => parseInt(id) === parseInt(this.id))) {
-          const display = `Consumer ${this.id} has not been created. Please use an ID that has been listed`;
-          this.$bvToast.toast(display, {
-            title: 'Unsuccessful',
-            autoHideDelay: 5000,
-            variant: 'danger'
-          });
-          return;
-        }
-
-        // check if prices is already listed
-        const prices = await this.$contractService.getPrices();
-        console.log('prices', prices);
-        if (prices.some(price => parseInt(price) === parseInt(this.price))) {
-          const display = `Price ${this.price} has already been listed. Please list another price!`;
-          this.$bvToast.toast(display, {
-            title: 'Unsuccessful',
-            autoHideDelay: 5000,
-            variant: 'danger'
-          });
-          return;
-        }
-
-        // check if quantity or price is 0
-        if (Number(this.qty) === 0 || Number(this.price) === 0) {
-          const display = `Please list a valid price or quantity!`;
-          this.$bvToast.toast(display, {
-            title: 'Unsuccessful',
-            autoHideDelay: 5000,
-            variant: 'danger'
-          });
-          return;
-        }
-
-        // check if quantity specified is > than current ID's balance
-        const balance = await this.$contractService.getConsumerCredits(parseInt(this.id));
-        console.log('balance', balance);
-        console.log('quan:', this.qty);
-        if (Number(this.qty) > Number(balance)) {
-          const display = `Specified quantity of ${this.qty} exceeds current consumer ID's token balance of ${balance}. Please specify a quantity lower than ${balance}!`;
-          this.$bvToast.toast(display, {
-            title: 'Unsuccessful',
-            autoHideDelay: 5000,
-            variant: 'danger'
-          });
-          return;
-        }
-
-        // approve consumer with credits
-        const marketAddress = await this.$contractService.getMarketPlaceAddress();
-        await this.$contractService.approve(marketAddress, this.qty);
-
-        // list credits
-        await this.$contractService.listCredit(parseInt(this.id), parseInt(this.price), parseInt(this.qty));
-
-        this.itemsList.push({
-          price: this.price,
-          qty: this.qty
-        });
-
-        this.itemsList.sort((a, b) => a.price - b.price);
-
-        const display = `Consumer ${this.id} successfully listed ${this.qty} credit(s) for ${this.price}`;
-        this.$bvToast.toast(display, {
-          title: 'Successful',
-          autoHideDelay: 5000,
-          variant: 'success'
-        });
-
-        // Clear form
-        this.id = '';
-        this.price = '';
-        this.qty = '';
-      } catch (error) {
-        console.error('Error listing credit:', error);
-        this.$bvToast.toast('Error listing credit: ' + error.message, {
-          title: 'Error',
-          autoHideDelay: 5000,
-          variant: 'danger'
-        });
-      }
+      this.itemsList.push({
+        user: 'newuser',
+        qty: this.qty,
+        price: this.price
+      });
+      this.itemsList.sort((a, b) => a.price - b.price);
+      this.id = '';
+      this.price = '';
+      this.qty = '';
     },
     async buyCredit() {
-      try {
-        const numListing = await this.$contractService.getNumListings();
-
-        // Check if there are listings
-        if (Number(numListing) !== 0) {
-          // approve credits to be listed
-          const marketAddress = await this.$contractService.getMarketPlaceAddress();
-          await this.$contractService.approve(marketAddress, this.buyQty);
-
-          // buying credits
-          await this.$contractService.buyCredit(parseInt(this.buyFirmId), parseInt(this.buyQty));
-
-          // Get transaction results
-          const lastNumFilled = await this.$contractService.getLastNumFilled();
-          console.log('lastNumFilled', lastNumFilled);
-          const lastAvgPriceFilled = await this.$contractService.getLastAvgPriceFilled();
-          console.log('lastAvgPriceFilled', lastAvgPriceFilled);
-
-          const display = `Filled: ${lastNumFilled} units, Average Filled Price: $${lastAvgPriceFilled}`;
-          this.$bvToast.toast(display, {
-            title: 'Order Filled',
-            autoHideDelay: 5000,
-            variant: 'success'
-          });
-
-          // Clear form
-          this.buyFirmId = '';
-          this.buyQty = '';
-
-          await this.setUp();
-        } else {
-          const display = `There are no listings. Purchase is not permitted.`;
-          this.$bvToast.toast(display, {
-            title: 'Order Failed',
-            autoHideDelay: 5000,
-            variant: 'danger'
-          });
-        }
-      } catch (error) {
-        console.error('Error buying credit:', error);
-        this.$bvToast.toast('Error buying credit: ' + error.message, {
-          title: 'Error',
-          autoHideDelay: 5000,
-          variant: 'danger'
-        });
-      }
+      alert(`Buying ${this.buyQty} credits from ${this.buyFirmId}`);
+      this.buyFirmId = '';
+      this.buyQty = '';
     }
   }
 };
