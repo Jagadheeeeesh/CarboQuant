@@ -1,23 +1,30 @@
-// import firebase from "firebase";
-// import store from "./store";
-//
-// const firebaseConfig = {
-//     apiKey: "AIzaSyC8FLGJNqsEMOwO30ndAQ9qJOFSYfgqVzw",
-//     authDomain: "is4302-app.firebaseapp.com",
-//     databaseURL: "https://is4302-app-default-rtdb.firebaseio.com",
-//     projectId: "is4302-app",
-//     storageBucket: "is4302-app.appspot.com",
-//     messagingSenderId: "455622780080",
-//     appId: "1:455622780080:web:0bd1c184210a5c70634775",
-//     measurementId: "G-1F2J8YSJXJ"
-// };
-//
-// firebase.initializeApp(firebaseConfig);
-//
-// firebase.auth().onAuthStateChanged(user => {
-//     store.dispatch("fetchUser", user);
-// });
-//
-// var database = firebase.firestore();
-//
-// export default database;
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getDatabase } from "firebase/database";
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyC5UNJk5X1JtUc0DjHmlEk-FEMslRazGh0",
+  authDomain: "carboquant.firebaseapp.com",
+  databaseURL: "https://carboquant-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "carboquant",
+  storageBucket: "carboquant.firebasestorage.app",
+  messagingSenderId: "251962879055",
+  appId: "1:251962879055:web:e6c735abd7562c2df24e3a",
+  measurementId: "G-ZS90V999JR"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+// Initialize Firebase services
+const analytics = getAnalytics(app);
+const auth = getAuth(app);
+const firestore = getFirestore(app);
+const realtimeDb = getDatabase(app);
+
+export { auth, firestore, realtimeDb, analytics };
+export default app;
